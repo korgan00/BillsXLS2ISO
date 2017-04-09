@@ -63,12 +63,12 @@ public class Book19 {
 		return paymentRef;
 	}
 	
-	public void setInfo(int paymentRef, String refStart, String cif, String name, 
+	public void setInfo(int paymentRef, String refStart, String cif, String bankId, String name, 
 			String fileName, String bic, String iban, Calendar payDayCalendar, Calendar fileCreationDate) {
 
 		this.referenceStart = refStart;
 		this.paymentRef = paymentRef;
-		String id = calculateId(cif);
+		String id = calculateId(cif, bankId);
 		//Calendar cal = Calendar.getInstance();
 		long date = calendarToInt(fileCreationDate);
 		long payDay = calendarToInt(payDayCalendar);
@@ -158,7 +158,7 @@ public class Book19 {
 	}
 	
 	
-	private String calculateId(String cif) {
+	private String calculateId(String cif, String bankId) {
 		String controlDigitsAux = cif + "ES00";
 		long controlDigits = 0;
 		
@@ -176,8 +176,12 @@ public class Book19 {
 		}
 		
 		controlDigits = 98 - (controlDigits % 97);
+		String bankIdPrepared = bankId;
+		for (int i = 3 - bankIdPrepared.length(); i > 0; i--) {
+			bankIdPrepared = "0" + bankIdPrepared;
+		}
 		
-		return "ES" + controlDigits + "000" + cif;
+		return "ES" + controlDigits + bankId + cif;
 	}
 	
 	public String toString() {

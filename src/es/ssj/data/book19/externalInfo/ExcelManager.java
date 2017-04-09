@@ -21,14 +21,15 @@ public class ExcelManager {
 
 		HSSFRow row = worksheet.getRow(1); // base 0
 		
-		String cif  = row.getCell(0).getStringCellValue();
-		String name = row.getCell(1).getStringCellValue();
-		String bic  = row.getCell(2).getStringCellValue();
-		String iban = row.getCell(3).getStringCellValue();
-		String ref  = row.getCell(4).getStringCellValue();
+		String cif     = row.getCell(0).getStringCellValue();
+		String name    = row.getCell(1).getStringCellValue();
+		String bic     = row.getCell(2).getStringCellValue();
+		String iban    = row.getCell(3).getStringCellValue();
+		String ref     = row.getCell(4).getStringCellValue();
 		int paymentRef = (int) row.getCell(5).getNumericCellValue();
+		String bankId  = row.getCell(6).getStringCellValue();
 		
-		book.setInfo(paymentRef, ref, cif, name, fileName /*Nombre del archivo que se va a crear*/,
+		book.setInfo(paymentRef, ref, cif, bankId, name, fileName /*Nombre del archivo que se va a crear*/,
 				bic, iban, payday, fileCreationDate); // preguntar por interfaz
 		
 		wb.close();
