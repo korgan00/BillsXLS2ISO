@@ -12,27 +12,45 @@ import java.io.*;
 
 public class ExcelManager {
     
-    public static void readCreditorInfo(String pathToCreditorXLS, Book19 book, String fileName, Calendar payday, Calendar fileCreationDate) throws IOException {
+    public static void readCreditorInfo(String pathToCreditorXLS, Book19 book, 
+    		String fileName, Calendar payday, Calendar fileCreationDate) throws XLSReadException {
     	
-		FileInputStream fileInputStream = new FileInputStream(pathToCreditorXLS);
-        Workbook wb = new HSSFWorkbook(fileInputStream);
+    	XLSReadException xlsException = new XLSReadException();
+    	
+    	try {
+    		xlsException.setErrorDetails("Abriendo archivo");
+			FileInputStream fileInputStream = new FileInputStream(pathToCreditorXLS);
+	        Workbook wb = new HSSFWorkbook(fileInputStream);
 
-		HSSFSheet worksheet = (HSSFSheet) wb.getSheetAt(0);
+	        xlsException.setErrorDetails("Seleccionando primera pagina");
+			HSSFSheet worksheet = (HSSFSheet) wb.getSheetAt(0);
 
-		HSSFRow row = worksheet.getRow(1); // base 0
-		
-		String cif     = row.getCell(0).getStringCellValue();
-		String name    = row.getCell(1).getStringCellValue();
-		String bic     = row.getCell(2).getStringCellValue();
-		String iban    = row.getCell(3).getStringCellValue();
-		String ref     = row.getCell(4).getStringCellValue();
-		int paymentRef = (int) row.getCell(5).getNumericCellValue();
-		String bankId  = row.getCell(6).getStringCellValue();
-		
-		book.setInfo(paymentRef, ref, cif, bankId, name, fileName /*Nombre del archivo que se va a crear*/,
-				bic, iban, payday, fileCreationDate); // preguntar por interfaz
-		
-		wb.close();
+			xlsException.setErrorDetails("Seleccionando fila 2");
+			HSSFRow row = worksheet.getRow(1); // base 0
+
+			xlsException.setErrorDetails("Leyendo columna A, esperaba campo de texto");
+			String cif     = row.getCell(0).getStringCellValue();
+			xlsException.setErrorDetails("Leyendo columna B, esperaba campo de texto");
+			String name    = row.getCell(1).getStringCellValue();
+			xlsException.setErrorDetails("Leyendo columna C, esperaba campo de texto");
+			String bic     = row.getCell(2).getStringCellValue();
+			xlsException.setErrorDetails("Leyendo columna D, esperaba campo de texto");
+			String iban    = row.getCell(3).getStringCellValue();
+			xlsException.setErrorDetails("Leyendo columna E, esperaba campo de texto");
+			String ref     = row.getCell(4).getStringCellValue();
+			xlsException.setErrorDetails("Leyendo columna F, esperaba campo numérico");
+			int paymentRef = (int) row.getCell(5).getNumericCellValue();
+			xlsException.setErrorDetails("Leyendo columna G, esperaba campo de texto");
+			String bankId  = row.getCell(6).getStringCellValue();
+			
+			book.setInfo(paymentRef, ref, cif, bankId, name, fileName /*Nombre del archivo que se va a crear*/,
+					bic, iban, payday, fileCreationDate); // preguntar por interfaz
+			
+			xlsException.setErrorDetails("Cerrando archivo");
+			wb.close();
+    	} catch(Exception e) {
+    		throw xlsException;
+    	}
     }
     
     public static void readDebtorsInfo(String pathToDebtorsXLS, Book19 book) throws IOException {

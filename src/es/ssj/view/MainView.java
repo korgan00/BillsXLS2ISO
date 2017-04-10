@@ -143,8 +143,8 @@ public class MainView extends JFrame implements DateSelectedListener {
 
 		try {
 			ExcelManager.readCreditorInfo(this.creditorsFile.getAbsolutePath(), book, this.newFileName, this.payday, cal);
-		} catch (Exception ex) {
-			error("Error al leer el xls de cobros.");
+		} catch (XLSReadException ex) {
+			error("Error al leer el xls de cobros.\n\r " + ex.getErrorDetails());
 			//ex.printStackTrace();
 			return;
 		}

@@ -161,11 +161,11 @@ public class Book19ToXML {
 		instdAmt.attributes().put("Ccy", "EUR");
 		
 		chargeRefZeroFilled.set(Integer.parseInt(debtorInfo.getChargeRef().toString().trim()));
-		return  new Tag("DrctDbtTxInf", 
+		return  new Tag("DrctDbtTxInf",
 					new Tag("PmtId", new Tag("EndToEndId", debtorInfo.getChargeRef())),
 							instdAmt,
 							new Tag("DrctDbtTx", new Tag("MndtRltdInf", 
-									new Tag("MndtId", debtorInfo.getChargeRef()), 
+									new Tag("MndtId", debtorInfo.getUniqueRefPrefix() + debtorInfo.getUniqueRefCore().toString()), 
 									new Tag("DtOfSgntr", getISODate(debtorInfo.getOrderSignCalendar().getTime()))
 							)),
 							new Tag("DbtrAgt", new Tag("FinInstnId", 
