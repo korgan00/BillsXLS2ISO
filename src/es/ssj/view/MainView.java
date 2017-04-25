@@ -14,6 +14,8 @@ import java.util.*;
 
 public class MainView extends JFrame implements DateSelectedListener {
 
+	private static final String XML = "XML";
+	private static final String TXT = "TXT";
 	/**
 	 * 
 	 */
@@ -24,7 +26,8 @@ public class MainView extends JFrame implements DateSelectedListener {
 	FileChooser debtorsFileChooser;
 	JPanel fileNamePanel;
 	JTextField fileNameTxtBox;
-	JCheckBox isXMLCheckBox;
+	//JCheckBox isXMLCheckBox;
+	JComboBox<String> isXMLComboBox;
 	DatePicker paydayPicker;
 	JButton aceptBtt;
 	JLabel infoLabel;
@@ -51,18 +54,22 @@ public class MainView extends JFrame implements DateSelectedListener {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		mainPanel = new JPanel(new GridLayout(7, 1, 20, 20));
-		fileNamePanel = new JPanel(new BorderLayout(5, 20));
+		//fileNamePanel = new JPanel(new BorderLayout(5, 20));
 		root = new PaddingPanel(20, 20, mainPanel);
 
 		debtorsFileChooser = new FileChooser("...", "Elige fichero de adeudos");
 		creditorsFileChooser = new FileChooser("...", "Elige fichero de cobros");
 		fileNameTxtBox = new JTextField("");
 		paydayPicker = new DatePicker();
-		isXMLCheckBox = new JCheckBox("XML");
+		//isXMLCheckBox = new JCheckBox("XML");
+		isXMLComboBox = new JComboBox<String>();
 		aceptBtt = new JButton("Generar");
 		infoLabel = new JLabel();		
 
-		isXMLCheckBox.setSelected(true);
+		//isXMLCheckBox.setSelected(true);
+		isXMLComboBox.addItem(TXT);
+		isXMLComboBox.addItem(XML);
+		isXMLComboBox.setSelectedItem(XML);
 		creditorsFileChooser.addFileSelectedListener(new OnCreditorsFileSelectionChange(this));
 		debtorsFileChooser.addFileSelectedListener(new OnDebtorsFileSelectionChange(this));
 		paydayPicker.addDateSelectedListener(this);
@@ -73,13 +80,15 @@ public class MainView extends JFrame implements DateSelectedListener {
 		aceptBtt.setEnabled(false);
 		aceptBtt.addMouseListener(new OnGenerateFile(this));
 
-		fileNamePanel.add(new LabeledComponent("Nombre del archivo", fileNameTxtBox), BorderLayout.CENTER);
-		fileNamePanel.add(new LabeledComponent("", isXMLCheckBox), BorderLayout.EAST);
+		//fileNamePanel.add(new LabeledComponent("Nombre del archivo", fileNameTxtBox), BorderLayout.CENTER);
+		//fileNamePanel.add(new LabeledComponent("", isXMLCheckBox), BorderLayout.EAST);
 		
 		mainPanel.add(new LabeledComponent("Fichero de adeudos", debtorsFileChooser));
 		mainPanel.add(new LabeledComponent("Fichero de cobros", creditorsFileChooser));
-		mainPanel.add(fileNamePanel);	
+		//mainPanel.add(fileNamePanel);	
+		mainPanel.add(new LabeledComponent("Nombre del archivo", fileNameTxtBox));	
 		mainPanel.add(new LabeledComponent("Fecha de cobro", paydayPicker));
+		mainPanel.add(new LabeledComponent("Exportar como...", isXMLComboBox));
 		mainPanel.add(infoLabel);
 		mainPanel.add(aceptBtt);
 
@@ -125,7 +134,8 @@ public class MainView extends JFrame implements DateSelectedListener {
 		Book19 book = new Book19(Book19.BOOK_19_15);
 		GregorianCalendar cal;
 		File outputFile;
-		String extension = isXMLCheckBox.isSelected() ? ".xml" : ".txt";
+		boolean isXMLSelected = isXMLComboBox.getSelectedItem().equals(XML); 
+		String extension = isXMLSelected ? ".xml" : ".txt";
 		
 		try {
 			
@@ -159,8 +169,8 @@ public class MainView extends JFrame implements DateSelectedListener {
 		}
 
 		try {
-			PrintWriter out = new PrintWriter(outputFile, "UTF-8");
-			if (isXMLCheckBox.isSelected()) {
+			PrintWriter out = new PrintWriter(outputFile, "ISO-8859-1");
+			if (isXMLSelected) {
 				out.print(book.toXML());
 			} else {
 				out.print(book.toString());
